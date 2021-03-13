@@ -1,1 +1,1 @@
-# Generat a password and past to clipboard
+# Generate a password and past to clipboard
