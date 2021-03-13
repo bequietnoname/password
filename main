@@ -1,0 +1,91 @@
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+#include <windows.h>
+
+std::string characterStrings(int randomValue)
+{
+    std::string line[89]
+    {
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+        "B","C", "D", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z","A", "E", "I", "O", "U", "Y",
+        "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-", "+", "=", "{", "]", "[", "}", ";", ":", "?", "/", ">", ".", "<", ",", 
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
+    };
+    std::string symbol = line[randomValue];
+    return symbol;
+}
+
+int ClipBoard(const char* output)
+{
+    const size_t len = strlen(output) + 1;
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len);
+    memcpy(GlobalLock(hMem), output, len);
+    GlobalUnlock(hMem);
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
+
+    return 0;
+}
+
+std::string generateString()
+{
+    std::cout << "Enter the number of characters in the password: ";
+    std::string lastString;
+    int length;
+    std::cin >> length;
+    std::string* p_darr = new std::string[length];
+    std::srand(std::time(nullptr));
+    for (int i = 0; i < length; i++)
+    {
+        int randomValue = rand() % 90;
+        p_darr[i] = characterStrings(randomValue);
+        lastString += p_darr[i];
+    }
+    delete[] p_darr;
+    std::string str = lastString;
+    const char* cstr = str.c_str();
+    ClipBoard(cstr);
+    return lastString;
+}
+
+void writeToFile(std::string username, std::string site)
+{
+    const std::string path = "V:\\vlad.txt";
+    std::ofstream out(path , std::ios::app);
+    if (out.is_open())
+    {
+        out
+            << "--------------- " << site
+            << std::endl
+            << "username: " << username
+            << std::endl
+            << "password: " << generateString()
+            << std::endl;
+    }
+    else
+        std::cout << "File not found" << std::endl;
+    out.close();
+    std::cout << "The password was copied to clipboard!" << std::endl;
+    std::cout << "--------------- " << std::endl << "The password is written in " << path << std::endl << std::endl;
+    system("pause");
+}
+
+void Data()
+{
+    std::string site, username;
+    std::cout << "type site - ";
+    std::cin >> site;
+    std::cout << "type username - ";
+    std::cin >> username;
+    writeToFile(username, site);
+}
+
+int main()
+{
+    Data();
+}
