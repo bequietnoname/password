@@ -77,7 +77,6 @@ int main()
     writeToFile(username, site);
 
     std::cout << "The password was copied to clipboard!" << std::endl;
-    getchar();
 
     return 0;
 }
